@@ -6,6 +6,9 @@ import dev.fpsaraiva.api_assembleia.service.PautaService;
 import dev.fpsaraiva.api_assembleia.service.SessaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +32,14 @@ public class SessaoController {
 
         SessaoDto sessao = sessaoService.abrirSessao(sessaoDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(sessao);
+    }
+
+    @GetMapping
+    public Page<SessaoDto> listarSessoes(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return sessaoService.listarSessoes(pageable);
     }
 }
