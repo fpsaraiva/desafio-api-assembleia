@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +33,12 @@ public class SessaoService {
                 ));
     }
 
-    public Optional<Sessao> existsById(UUID pautaId) {
-        return sessaoRepository.findById(pautaId);
+    public Optional<Sessao> existsById(UUID sessaoId) {
+        return sessaoRepository.findById(sessaoId);
+    }
+
+    public boolean validarAbertura(UUID sessaoId) {
+        Optional<Sessao> sessao = sessaoRepository.findById(sessaoId);
+        return LocalDateTime.now().isAfter(sessao.get().getFim());
     }
 }

@@ -32,6 +32,10 @@ public class VotoController {
                 throw new ApiErroException(HttpStatus.NOT_FOUND, "A Sessão de ID '" + votoDto.idSessao() + "' não existe.");
             }
 
+            if (sessaoService.validarAbertura(votoDto.idSessao())) {
+                throw new ApiErroException(HttpStatus.BAD_REQUEST, "Não foi possível votar, pois a Sessão de ID '" + votoDto.idSessao() + "' já foi encerrada para votação.");
+            }
+
             VotoDto voto = votoService.registrarVoto(votoDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(voto);
         } catch (DataIntegrityViolationException e) {
