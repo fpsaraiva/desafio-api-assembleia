@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class PautaService {
 
@@ -30,5 +33,9 @@ public class PautaService {
                    pauta.getId(),
                    pauta.getTitulo()
                 ));
+    }
+
+    public Optional<Pauta> existsById(UUID pautaId) {
+        return pautaRepository.findById(pautaId);
     }
 }

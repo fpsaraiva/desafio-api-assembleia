@@ -18,6 +18,13 @@ public class Pauta {
     @NotBlank(message = "O título da pauta é obrigatório.")
     private String titulo;
 
+    public Pauta() {
+    }
+
+    public Pauta(UUID id) {
+        this.id = id;
+    }
+
     public UUID getId() {
         return id;
     }
