@@ -1,5 +1,6 @@
 package dev.fpsaraiva.api_assembleia.service;
 
+import dev.fpsaraiva.api_assembleia.client.ValidaCpf;
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
 import dev.fpsaraiva.api_assembleia.entity.Voto;
@@ -17,12 +18,16 @@ import java.util.UUID;
 public class VotoService {
 
     @Autowired
-    public VotoRepository votoRepository;
+    private VotoRepository votoRepository;
 
     @Autowired
-    public SessaoRepository sessaoRepository;
+    private SessaoRepository sessaoRepository;
+
+    //@Autowired
+    //private ValidaCpf validaCpf;
 
     public VotoDto registrarVoto(@Valid VotoDto votoDto) {
+        //TODO: valida cpf - URL da api retornando 404
         Voto voto = votoRepository.save(Voto.toModel(votoDto));
         return VotoDto.toDto(voto);
     }
