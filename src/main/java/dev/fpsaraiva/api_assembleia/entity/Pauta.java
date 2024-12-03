@@ -15,6 +15,7 @@ public class Pauta {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @NotBlank(message = "O título da pauta é obrigatório.")
     private String titulo;
 

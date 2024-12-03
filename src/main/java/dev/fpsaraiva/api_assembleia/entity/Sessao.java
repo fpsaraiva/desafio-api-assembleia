@@ -13,12 +13,16 @@ public class Sessao {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @OneToOne
     @NotNull(message = "O id da pauta deve ser preenchido.")
     private Pauta pauta;
+
     private int duracaoEmMinutos;
+
     @Column(name = "inicio_sessao")
     private LocalDateTime inicio;
+
     @Column(name = "fim_sessao")
     private LocalDateTime fim;
 
