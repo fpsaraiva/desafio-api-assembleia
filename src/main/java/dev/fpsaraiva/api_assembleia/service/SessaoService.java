@@ -6,6 +6,9 @@ import dev.fpsaraiva.api_assembleia.repository.SessaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class SessaoService {
 
@@ -15,5 +18,9 @@ public class SessaoService {
     public SessaoDto abrirSessao(SessaoDto sessaoDto) {
         Sessao sessao = sessaoRepository.save(Sessao.toModel(sessaoDto));
         return SessaoDto.toDto(sessao);
+    }
+
+    public Optional<Sessao> existsById(UUID pautaId) {
+        return sessaoRepository.findById(pautaId);
     }
 }

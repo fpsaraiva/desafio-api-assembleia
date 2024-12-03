@@ -26,6 +26,13 @@ public class Sessao {
     @Column(name = "fim_sessao")
     private LocalDateTime fim;
 
+    public Sessao() {
+    }
+
+    public Sessao(UUID id) {
+        this.id = id;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -76,6 +83,6 @@ public class Sessao {
     }
 
     public static int validaDuracaoMinutos(int duracaoEmMinutos) {
-        return duracaoEmMinutos < 0 ? 1 : duracaoEmMinutos;
+        return duracaoEmMinutos <= 0 ? 1 : duracaoEmMinutos;
     }
 }

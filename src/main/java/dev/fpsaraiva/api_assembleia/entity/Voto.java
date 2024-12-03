@@ -18,8 +18,8 @@ public class Voto {
     private UUID id;
 
     @ManyToOne
-    @NotNull(message = "O id da pauta deve ser preenchido.")
-    private Pauta pauta;
+    @NotNull(message = "O id da sessao deve ser preenchido.")
+    private Sessao sessao;
 
     @NotNull(message = "O id do associado deve ser preenchido.")
     @Column(name = "id_associado")
@@ -37,12 +37,12 @@ public class Voto {
         this.id = id;
     }
 
-    public Pauta getPauta() {
-        return pauta;
+    public Sessao getSessao() {
+        return sessao;
     }
 
-    public void setPauta(Pauta pauta) {
-        this.pauta = pauta;
+    public void setSessao(Sessao sessao) {
+        this.sessao = sessao;
     }
 
     public UUID getIdAssociado() {
@@ -63,7 +63,7 @@ public class Voto {
 
     public static Voto toModel(VotoDto votoDto) {
         Voto voto = new Voto();
-        voto.setPauta(new Pauta(votoDto.idPauta()));
+        voto.setSessao(new Sessao(votoDto.idSessao()));
         voto.setIdAssociado(votoDto.idAssociado());
         voto.setVoto(votoDto.voto());
         return voto;
