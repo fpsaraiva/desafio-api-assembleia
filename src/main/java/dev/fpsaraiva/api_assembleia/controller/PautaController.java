@@ -3,9 +3,12 @@ package dev.fpsaraiva.api_assembleia.controller;
 import dev.fpsaraiva.api_assembleia.dto.PautaDto;
 import dev.fpsaraiva.api_assembleia.entity.Pauta;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
+import dev.fpsaraiva.api_assembleia.exception.ErroPadronizado;
 import dev.fpsaraiva.api_assembleia.service.PautaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,7 +39,11 @@ public class PautaController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Pauta criada com sucesso"),
-            @ApiResponse(responseCode = "422", description = "Pauta com o mesmo título já existente")
+            @ApiResponse(
+                    responseCode = "422",
+                    description = "Pauta com o mesmo título já existente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroPadronizado.class)))
     })
     @PostMapping
     public ResponseEntity<PautaDto> criarPauta(

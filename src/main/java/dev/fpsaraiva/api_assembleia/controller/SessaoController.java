@@ -1,13 +1,15 @@
 package dev.fpsaraiva.api_assembleia.controller;
 
 import dev.fpsaraiva.api_assembleia.dto.SessaoDto;
-import dev.fpsaraiva.api_assembleia.entity.Pauta;
 import dev.fpsaraiva.api_assembleia.entity.Sessao;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
+import dev.fpsaraiva.api_assembleia.exception.ErroPadronizado;
 import dev.fpsaraiva.api_assembleia.service.PautaService;
 import dev.fpsaraiva.api_assembleia.service.SessaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +43,11 @@ public class SessaoController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sessão aberta com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pauta não encontrada")
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Pauta não encontrada",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroPadronizado.class)))
     })
     @PostMapping
     public ResponseEntity<SessaoDto> abrirSessao(

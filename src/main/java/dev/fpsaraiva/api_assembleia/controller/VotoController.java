@@ -2,13 +2,15 @@ package dev.fpsaraiva.api_assembleia.controller;
 
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
-import dev.fpsaraiva.api_assembleia.entity.Sessao;
 import dev.fpsaraiva.api_assembleia.entity.Voto;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
+import dev.fpsaraiva.api_assembleia.exception.ErroPadronizado;
 import dev.fpsaraiva.api_assembleia.service.SessaoService;
 import dev.fpsaraiva.api_assembleia.service.VotoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,8 +44,18 @@ public class VotoController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Voto registrado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Sessão encerrada ou voto já realizado pelo associado"),
-            @ApiResponse(responseCode = "404", description = "Sessão não encontrada")
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Sessão encerrada ou voto já realizado pelo associado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroPadronizado.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Sessão não encontrada",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroPadronizado.class))
+            )
     })
     @PostMapping
     public ResponseEntity<VotoDto> registrarVoto(
@@ -78,7 +90,12 @@ public class VotoController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Votos contabilizados com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Sessão não encontrada")
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Sessão não encontrada",
+                    content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = ErroPadronizado.class))
+            )
     })
     @GetMapping("/{idSessao}")
     public ResponseEntity<ResultadoVotacaoDto> contabilizarVotos(
