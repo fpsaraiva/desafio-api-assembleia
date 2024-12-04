@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Pauta", description = "Operações relacionadas às pautas")
 @RestController
-@RequestMapping("/pautas")
+@RequestMapping("/api/v1/pautas")
 public class PautaController {
 
     @Autowired

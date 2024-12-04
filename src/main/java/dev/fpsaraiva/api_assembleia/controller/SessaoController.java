@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Sessão", description = "Operações relacionadas às sessões")
 @RestController
-@RequestMapping("/sessoes")
+@RequestMapping("/api/v1/sessoes")
 public class SessaoController {
 
     @Autowired

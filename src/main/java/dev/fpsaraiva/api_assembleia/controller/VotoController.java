@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @Tag(name = "Voto", description = "Operações relacionadas às votações")
 @RestController
-@RequestMapping("/votos")
+@RequestMapping("/api/v1/votos")
 public class VotoController {
 
     @Autowired
