@@ -1,4 +1,4 @@
-package dev.fpsaraiva.api_assembleia.config;
+package dev.fpsaraiva.api_assembleia.config.docs;
 
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;

@@ -1,5 +1,7 @@
 package dev.fpsaraiva.api_assembleia.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fpsaraiva.api_assembleia.client.ValidaCpf;
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
@@ -8,7 +10,11 @@ import dev.fpsaraiva.api_assembleia.enums.VotoEnum;
 import dev.fpsaraiva.api_assembleia.repository.SessaoRepository;
 import dev.fpsaraiva.api_assembleia.repository.VotoRepository;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +32,24 @@ public class VotoService {
     //@Autowired
     //private ValidaCpf validaCpf;
 
+    private final Logger logger = LoggerFactory.getLogger(Voto.class);
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${topicos.assembleia.resultado.votacao.topic}")
+    private String topicoAssembleia;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     public VotoDto registrarVoto(@Valid VotoDto votoDto) {
         //TODO: valida cpf - URL da api retornando 404
         Voto voto = votoRepository.save(Voto.toModel(votoDto));
         return VotoDto.toDto(voto);
     }
 
-    public ResultadoVotacaoDto getResultadoVotacao(UUID idSessao) {
+    public ResultadoVotacaoDto getResultadoVotacao(UUID idSessao) throws JsonProcessingException {
         List<Voto> votos = votoRepository.findBySessao_Id(idSessao);
 
         int totalVotos = votos.size();
@@ -50,6 +67,10 @@ public class VotoService {
             votosSim,
             votosNao
         );
+
+        kafkaTemplate.send(topicoAssembleia, objectMapper.writeValueAsString(resultado));
+
+        logger.info("Resultado de votação da seção 'id={}' CONTABILIZADO com sucesso!", resultado.idSessao());
 
         return resultado;
     }

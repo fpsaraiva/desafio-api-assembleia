@@ -1,5 +1,7 @@
 package dev.fpsaraiva.api_assembleia.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
 import dev.fpsaraiva.api_assembleia.entity.Sessao;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +24,12 @@ public class VotoServiceTests {
 
     @Mock
     private VotoRepository votoRepository;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @InjectMocks
     private VotoService votoService;
@@ -56,7 +65,7 @@ public class VotoServiceTests {
     }
 
     @Test
-    public void testGetResultadoVotacao() {
+    public void testGetResultadoVotacao() throws JsonProcessingException {
         UUID idSessao = UUID.randomUUID();
 
         List<Voto> votosMock = List.of(
@@ -65,7 +74,10 @@ public class VotoServiceTests {
                 new Voto(UUID.randomUUID(), new Sessao(idSessao), UUID.randomUUID(), VotoEnum.NAO)
         );
 
+        String jsonMock = "{\"idSessao\":\"valor1\", \"totalVotos\":\"valor2\", \"sim\":\"valor3\", \"nao\":\"valor3\"}";
+
         when(votoRepository.findBySessao_Id(idSessao)).thenReturn(votosMock);
+        when(objectMapper.writeValueAsString(votosMock)).thenReturn(jsonMock);
 
         ResultadoVotacaoDto resultado = votoService.getResultadoVotacao(idSessao);
 
@@ -78,7 +90,7 @@ public class VotoServiceTests {
     }
 
     @Test
-    void testGetResultadoVotacaoSemVotos() {
+    void testGetResultadoVotacaoSemVotos() throws JsonProcessingException {
         UUID idSessao = UUID.randomUUID();
 
         when(votoRepository.findBySessao_Id(idSessao)).thenReturn(List.of());

@@ -1,5 +1,6 @@
 package dev.fpsaraiva.api_assembleia.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
 import dev.fpsaraiva.api_assembleia.entity.Voto;
@@ -95,15 +96,27 @@ public class VotoController {
                     description = "Sessão não encontrada",
                     content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ErroPadronizado.class))
-            )
+            ),
+            @ApiResponse(
+                    responseCode = "422",
+                    description = "Sessão não finalizada",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErroPadronizado.class))
+            ),
     })
     @GetMapping("/{idSessao}")
     public ResponseEntity<ResultadoVotacaoDto> contabilizarVotos(
             @Parameter(description = "ID da sessão para buscar votos", required = true)
             @PathVariable(name = "idSessao") UUID idSessao
-            ) {
+            ) throws JsonProcessingException {
         if (sessaoService.existsById(idSessao).isEmpty()) {
             throw new ApiErroException(HttpStatus.NOT_FOUND, "A Sessão de ID '" + idSessao + "' não existe.");
+        }
+
+        if (!sessaoService.validarAbertura(idSessao)) {
+            logger.error("ERRO: Sessão com ID 'id={}' permanece ABERTA!", idSessao);
+            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "Não foi possível contabilizar os votos, " +
+                    "pois a Sessão de ID '" + idSessao + "' ainda está aberta.");
         }
 
         ResultadoVotacaoDto resultadoVotacaoDto = votoService.getResultadoVotacao(idSessao);
