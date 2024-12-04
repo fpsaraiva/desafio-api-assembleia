@@ -2,6 +2,8 @@ package dev.fpsaraiva.api_assembleia.controller;
 
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
+import dev.fpsaraiva.api_assembleia.entity.Sessao;
+import dev.fpsaraiva.api_assembleia.entity.Voto;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
 import dev.fpsaraiva.api_assembleia.service.SessaoService;
 import dev.fpsaraiva.api_assembleia.service.VotoService;
@@ -11,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -26,8 +30,11 @@ public class VotoController {
 
     @Autowired
     private VotoService votoService;
+
     @Autowired
     private SessaoService sessaoService;
+
+    private final Logger logger = LoggerFactory.getLogger(Voto.class);
 
     @Operation(
             summary = "Registrar votos",
@@ -44,16 +51,22 @@ public class VotoController {
     ) {
         try {
             if (sessaoService.existsById(votoDto.idSessao()).isEmpty()) {
+                logger.error("ERRO: Sessão com ID 'id={}' NÃO EXISTE!", votoDto.idSessao());
                 throw new ApiErroException(HttpStatus.NOT_FOUND, "A Sessão de ID '" + votoDto.idSessao() + "' não existe.");
             }
 
             if (sessaoService.validarAbertura(votoDto.idSessao())) {
+                logger.error("ERRO: Sessão com ID 'id={}' JÁ ENCERRADA!", votoDto.idSessao());
                 throw new ApiErroException(HttpStatus.BAD_REQUEST, "Não foi possível votar, pois a Sessão de ID '" + votoDto.idSessao() + "' já foi encerrada para votação.");
             }
 
             VotoDto voto = votoService.registrarVoto(votoDto);
+
+            logger.info("Voto 'id={}' REGISTRADO com sucesso!", voto.id());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(voto);
         } catch (DataIntegrityViolationException e) {
+            logger.error("ERRO: Associado já votou na pauta desta sessão");
             throw new ApiErroException(HttpStatus.BAD_REQUEST,
                     "Não é possível registrar este voto. O associado já votou na pauta desta sessão.");
         }

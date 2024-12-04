@@ -1,6 +1,7 @@
 package dev.fpsaraiva.api_assembleia.controller;
 
 import dev.fpsaraiva.api_assembleia.dto.PautaDto;
+import dev.fpsaraiva.api_assembleia.entity.Pauta;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
 import dev.fpsaraiva.api_assembleia.service.PautaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +28,8 @@ public class PautaController {
     @Autowired
     private PautaService pautaService;
 
+    private final Logger logger = LoggerFactory.getLogger(Pauta.class);
+
     @Operation(
             summary = "Cadastrar uma pauta",
             description = "Cadastrar uma nova pauta."
@@ -38,10 +43,14 @@ public class PautaController {
             @Valid @RequestBody PautaDto pautaDto
     ) {
         if (pautaService.existsByTitulo(pautaDto.titulo())) {
+            logger.error("ERRO: Pauta com título 'titulo={}' JÁ EXISTE!", pautaDto.titulo());
             throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "Pauta com título '" + pautaDto.titulo() + "' já existe.");
         }
 
         PautaDto pauta = pautaService.criarPauta(pautaDto);
+
+        logger.info("Pauta 'id={}' CRIADA com sucesso!", pauta.id());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(pauta);
     }
 

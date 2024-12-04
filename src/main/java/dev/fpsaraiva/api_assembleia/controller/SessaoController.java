@@ -1,6 +1,8 @@
 package dev.fpsaraiva.api_assembleia.controller;
 
 import dev.fpsaraiva.api_assembleia.dto.SessaoDto;
+import dev.fpsaraiva.api_assembleia.entity.Pauta;
+import dev.fpsaraiva.api_assembleia.entity.Sessao;
 import dev.fpsaraiva.api_assembleia.exception.ApiErroException;
 import dev.fpsaraiva.api_assembleia.service.PautaService;
 import dev.fpsaraiva.api_assembleia.service.SessaoService;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +29,11 @@ public class SessaoController {
 
     @Autowired
     private SessaoService sessaoService;
+
     @Autowired
     private PautaService pautaService;
+
+    private final Logger logger = LoggerFactory.getLogger(Sessao.class);
 
     @Operation(
             summary = "Abrir uma sessão de votação",
@@ -41,10 +48,14 @@ public class SessaoController {
             @Valid @RequestBody SessaoDto sessaoDto
     ) {
         if (pautaService.existsById(sessaoDto.idPauta()).isEmpty()) {
+            logger.error("ERRO: Pauta com ID 'id={}' NÃO EXISTE!", sessaoDto.idPauta());
             throw new ApiErroException(HttpStatus.NOT_FOUND, "Pauta de ID '" + sessaoDto.idPauta() + "' não existe.");
         }
 
         SessaoDto sessao = sessaoService.abrirSessao(sessaoDto);
+
+        logger.info("Sessão 'id={}' CRIADA com sucesso!", sessao.id());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(sessao);
     }
 
