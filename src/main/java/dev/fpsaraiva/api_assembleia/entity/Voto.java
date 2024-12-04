@@ -29,6 +29,16 @@ public class Voto {
     @NotNull(message = "O voto deve ser preenchido")
     private VotoEnum voto;
 
+    public Voto() {
+    }
+
+    public Voto(UUID id, Sessao sessao, UUID idAssociado, VotoEnum voto) {
+        this.id = id;
+        this.sessao = sessao;
+        this.idAssociado = idAssociado;
+        this.voto = voto;
+    }
+
     public UUID getId() {
         return id;
     }
