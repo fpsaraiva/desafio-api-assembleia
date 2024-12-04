@@ -33,6 +33,14 @@ public class Sessao {
         this.id = id;
     }
 
+    public Sessao(UUID id, Pauta pauta, int duracaoEmMinutos, LocalDateTime inicio, LocalDateTime fim) {
+        this.id = id;
+        this.pauta = pauta;
+        this.duracaoEmMinutos = duracaoEmMinutos;
+        this.inicio = inicio;
+        this.fim = fim;
+    }
+
     public UUID getId() {
         return id;
     }
