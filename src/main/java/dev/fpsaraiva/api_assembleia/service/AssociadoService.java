@@ -17,7 +17,11 @@ public class AssociadoService {
     @Autowired
     private AssociadoRepository associadoRepository;
 
+    //@Autowired
+    //private ValidaCpf validaCpf;
+
     public AssociadoDto cadastrarAssociado(AssociadoDto associadoDto) {
+        //TODO: valida cpf - URL da api retornando 404
         Associado associado = associadoRepository.save(Associado.toModel(associadoDto));
         return AssociadoDto.toDto(associado);
     }

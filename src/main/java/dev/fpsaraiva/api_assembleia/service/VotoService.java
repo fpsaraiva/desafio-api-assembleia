@@ -2,7 +2,6 @@ package dev.fpsaraiva.api_assembleia.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.fpsaraiva.api_assembleia.client.ValidaCpf;
 import dev.fpsaraiva.api_assembleia.dto.ResultadoVotacaoDto;
 import dev.fpsaraiva.api_assembleia.dto.VotoDto;
 import dev.fpsaraiva.api_assembleia.entity.Voto;
@@ -29,9 +28,6 @@ public class VotoService {
     @Autowired
     private SessaoRepository sessaoRepository;
 
-    //@Autowired
-    //private ValidaCpf validaCpf;
-
     private final Logger logger = LoggerFactory.getLogger(Voto.class);
 
     @Autowired
@@ -44,7 +40,6 @@ public class VotoService {
     private ObjectMapper objectMapper;
 
     public VotoDto registrarVoto(@Valid VotoDto votoDto) {
-        //TODO: valida cpf - URL da api retornando 404
         Voto voto = votoRepository.save(Voto.toModel(votoDto));
         return VotoDto.toDto(voto);
     }

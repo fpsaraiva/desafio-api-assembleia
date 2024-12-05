@@ -39,7 +39,7 @@ public class VotoServiceTests {
     }
 
     @Test
-    public void testRegistrarVoto() {
+    void testRegistrarVoto() {
         VotoDto votoDto = new VotoDto(
                 UUID.randomUUID(),
                 UUID.randomUUID(),
@@ -65,7 +65,7 @@ public class VotoServiceTests {
     }
 
     @Test
-    public void testGetResultadoVotacao() throws JsonProcessingException {
+    void testGetResultadoVotacao() throws JsonProcessingException {
         UUID idSessao = UUID.randomUUID();
 
         List<Voto> votosMock = List.of(
