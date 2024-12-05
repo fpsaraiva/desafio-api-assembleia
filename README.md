@@ -47,6 +47,7 @@ por sua vez, é relacionada a uma pauta específica.
 * Pelo mesmo motivo, não foi implementado CRUD completo nos endpoints de Pauta, Sessão e Voto.
 * Foi implementado um cadastro para associados, de maneira a facilitar o registro de votação. Neste cadastro, o CPF 
 não chega a ser validado.
+* A criação de testes unitários esteve focada nas classes de Controller e Service.
 * Na tarefa bônus 1, foi realizada a criação do cliente para integrar com sistema externo de validação de CPF. No entanto, 
 como a API encontra-se fora do ar, a implementação do método no respectivo service não foi realizada.
 * Na tarefa bônus 2, foi criado somente um produtor na aplicação. As mensagens produzidas podem ser lidas diretamente via 
